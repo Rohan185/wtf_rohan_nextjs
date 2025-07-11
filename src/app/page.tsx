@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="bg-gradient-to-br from-[#0a0a23] via-[#1a1a40] to-[#23235b] min-h-screen text-white font-sans">
+    <div className="min-h-screen text-white font-sans">
       <Hero />
 
       <Tracks />

@@ -20,7 +20,133 @@
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(135deg, #0f172a, #1e293b, #1e1b4b);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(76, 201, 240, 0.03) 0%, transparent 25%),
+    radial-gradient(circle at 80% 70%, rgba(114, 9, 183, 0.03) 0%, transparent 30%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Hero section background effect */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.2) 0%, rgba(219, 39, 119, 0.2) 100%);
+  backdrop-filter: blur(10px);
+}
+
+/* Animation keyframes */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes gradient-move {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes slide-in-from-right {
+  0% {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-left {
+  0% {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes rack-slide-in {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-gradient-move {
+  animation: gradient-move 15s ease infinite;
+  background-size: 300% 300%;
+}
+
+.animate-rack-slide-in {
+  animation: rack-slide-in 0.5s forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-from-right 0.5s forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-from-left 0.5s forwards;
+}
+
+/* Track card styles */
+.track-card {
+  @apply bg-black/20 backdrop-blur-md rounded-md shadow-lg border border-white/10 p-6 transition-all duration-300;
+  transform-origin: center bottom;
+}
+
+.track-card:hover {
+  @apply bg-black/30 border-[#4CC9F0]/30;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(76, 201, 240, 0.1);
 }
