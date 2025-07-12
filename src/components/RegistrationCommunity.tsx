@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 
 const RegistrationCommunity = () => {
   return (
@@ -96,7 +95,7 @@ const RegistrationCommunity = () => {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-black">How to Register</h3>
-                <div className="text-xs font-mono mt-1 text-black/70">/* Follow these steps to join the hackathon */</div>
+                <div className="text-xs font-mono mt-1 text-black/70">{/* Follow these steps to join the hackathon */}</div>
               </div>
             </motion.div>
             
@@ -111,7 +110,7 @@ const RegistrationCommunity = () => {
                   { step: 3, text: "Join Discord link in confirmation email", emoji: "📧", color: "from-teal-500/20 to-teal-600/10" },
                   { step: 4, text: "Attend kickoff for briefs & APIs", emoji: "🎬", color: "from-purple-500/20 to-purple-600/10" },
                   { step: 5, text: "Build, submit, and demo your project", emoji: "🛠️", color: "from-blue-500/20 to-blue-600/10" }
-                ].map((item, index) => (
+                ].map((item) => (
                   <motion.div 
                     key={item.step}
                     className="relative pl-12"
