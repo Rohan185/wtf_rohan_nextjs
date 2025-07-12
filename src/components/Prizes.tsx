@@ -1,105 +1,348 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import Image from "next/image";
 
-const sectionVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
+// Confetti component with proper TypeScript types
+const Confetti = ({ 
+  active, 
+  colors, 
+  count = 50 
+}: { 
+  active: boolean; 
+  colors: string[]; 
+  count?: number;
+}) => {
+  const generateConfetti = () => {
+    return Array.from({ length: count }).map((_, i) => {
+      const size = Math.random() * 8 + 5;
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const left = Math.random() * 100;
+      const animDelay = Math.random() * 3;
+      const animDuration = 3 + Math.random() * 4;
+      
+      return (
+        <motion.div
+          key={i}
+          className="absolute z-20 rounded-sm"
+          initial={{ 
+            top: "-10%", 
+            left: `${left}%`,
+            width: size,
+            height: size,
+            backgroundColor: color,
+            opacity: 1,
+            rotate: 0
+          }}
+          animate={{
+            top: "100%",
+            opacity: [1, 1, 0],
+            rotate: Math.random() > 0.5 ? 360 : -360,
+            x: Math.random() * 100 - 50
+          }}
+          transition={{
+            duration: animDuration,
+            delay: animDelay,
+            ease: "easeOut",
+            repeat: active ? Infinity : 0,
+            repeatDelay: Math.random() * 2
+          }}
+        />
+      );
+    });
+  };
 
-const prizeVariants = {
-  hidden: { opacity: 0, scale: 0.8 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+  return <>{active && generateConfetti()}</>;
 };
 
 const Prizes = () => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  // State to track which card has confetti active
+  const [activeConfetti, setActiveConfetti] = useState<number | null>(null);
+
+  // Transform values based on scroll
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.05, 0.95]);
+  const backgroundOpacity = useTransform(scrollYProgress, [0, 0.3, 0.8, 1], [0.1, 0.2, 0.2, 0.1]);
+  const backgroundRotate = useTransform(scrollYProgress, [0, 1], [-1, 1]);
+
+  const prizeData = [
+    {
+      amount: "₹1,20,000",
+      title: "Winner",
+      emoji: "🏆",
+      color: "from-purple-500 to-blue-500",
+      confettiColors: ["#FFD700", "#9b5de5", "#f15bb5", "#fee440"]
+    },
+    {
+      amount: "₹75,000",
+      title: "First Runner Up",
+      emoji: "🥈",
+      color: "from-blue-500 to-teal-500",
+      confettiColors: ["#00f5d4", "#00bbf9", "#fee440", "#ffffff"]
+    },
+    {
+      amount: "₹55,000",
+      title: "Second Runner Up",
+      emoji: "🥉",
+      color: "from-teal-500 to-green-500",
+      confettiColors: ["#fb5607", "#ffbe0b", "#3a86ff", "#8338ec"]
+    },
+    {
+      amount: "₹50,000",
+      title: "Track Winners (5)",
+      subtitle: "₹10,000 each",
+      emoji: "🚀",
+      color: "from-green-500 to-yellow-500",
+      confettiColors: ["#ff9e00", "#ff0054", "#390099", "#ffbd00"]
+    }
+  ];
+
   return (
-    <motion.section
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={sectionVariants}
-      className="relative py-16 px-6 max-w-5xl mx-auto flex flex-col items-center"
-    >
-      {/* Floating Badge */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.1 }}
-        className="absolute -top-8 left-1/2 -translate-x-1/2 z-20"
+    <section id="prizes" className="relative py-24 overflow-hidden" ref={containerRef}>
+      {/* Background elements */}
+      <div className="absolute inset-0 -z-10 opacity-30">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-[0.1]" />
+      </div>
+      
+      {/* Background color to blend with image */}
+      <div className="absolute inset-0 bg-[#3BB371] -z-5"></div>
+      
+      {/* Prizes.png background with enhanced fading */}
+      <motion.div 
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] -z-4 overflow-visible"
+        style={{ 
+          scale: backgroundScale,
+          opacity: backgroundOpacity,
+          rotate: backgroundRotate
+        }}
       >
-        <span className="bg-gradient-to-r from-[#ffb300] to-[#ff6e00] text-[#23235b] px-6 py-2 rounded-full font-bold text-lg shadow-xl border-2 border-white/60 animate-bounce-slow">
-          Prize Pool
-        </span>
+        {/* Multiple layers of fading for seamless blending */}
+        <div className="absolute inset-[-50%] bg-stronger-radial-fade pointer-events-none z-30"></div>
+        <div className="absolute inset-[-20%] bg-radial-fade pointer-events-none z-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#3BB371]/70 z-10"></div>
+        
+        {/* The image itself with feathered edges */}
+        <div className="relative w-full h-full rounded-[50%] overflow-hidden feathered-edge">
+          <Image
+            src="/prizes.png"
+            alt="Prizes Background"
+            fill
+            style={{ objectFit: 'contain', objectPosition: 'center' }}
+            className="mix-blend-soft-light filter blur-[2px]"
+            priority
+          />
+        </div>
       </motion.div>
-      <motion.h2
-        variants={prizeVariants}
-        className="text-3xl font-bold mb-6 bg-gradient-to-r from-[#ffb300] via-[#ff6e00] to-[#23235b] bg-clip-text text-transparent"
-      >
-        Prizes & Rewards
-      </motion.h2>
-      <div className="w-full grid md:grid-cols-3 gap-8">
-        <motion.h2
-          variants={prizeVariants}
-          className="text-3xl font-bold mb-6 text-[#ffb300] text-center"
+      
+      {/* Animated background shapes to help with blending */}
+      <motion.div 
+        className="absolute top-20 left-10 w-64 h-64 rounded-full bg-purple-500/10 blur-3xl"
+        animate={{ 
+          x: [0, 50, 0],
+          y: [0, 30, 0],
+        }}
+        transition={{ 
+          duration: 8,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+      
+      <motion.div 
+        className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl"
+        animate={{ 
+          x: [0, -70, 0],
+          y: [0, 50, 0],
+        }}
+        transition={{ 
+          duration: 10,
+          repeat: Infinity,
+          repeatType: "reverse"
+        }}
+      />
+
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Section header with animated underline */}
+        <div className="text-center mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="inline-block mb-2"
+          >
+            <span className="bg-black text-white px-4 py-1 rounded-full text-sm font-medium">
+              REWARDS
+            </span>
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold mb-4 text-black"
+          >
+            Epic Prizes Await
+          </motion.h2>
+          
+          <motion.div
+            initial={{ width: 0 }}
+            whileInView={{ width: "80px" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="h-1 bg-black mx-auto rounded-full"
+          />
+        </div>
+
+        {/* Prize cards with staggered animation */}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.2
+              }
+            }
+          }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
         >
-          Prizes & Rewards
-        </motion.h2>
+          {prizeData.map((prize, index) => (
+            <motion.div
+              key={index}
+              variants={{
+                hidden: { opacity: 0, y: 50 },
+                visible: { 
+                  opacity: 1, 
+                  y: 0,
+                  transition: { duration: 0.6 }
+                }
+              }}
+              whileHover={{ 
+                y: -10,
+                transition: { duration: 0.2 }
+              }}
+              onHoverStart={() => setActiveConfetti(index)}
+              onHoverEnd={() => setActiveConfetti(null)}
+              onViewportEnter={() => {
+                // Briefly show confetti when card enters viewport
+                setActiveConfetti(index);
+                setTimeout(() => {
+                  if (activeConfetti === index) {
+                    setActiveConfetti(null);
+                  }
+                }, 2000);
+              }}
+              className={`relative bg-gradient-to-br ${prize.color} rounded-2xl overflow-hidden shadow-xl backdrop-blur-sm`}
+            >
+              <div className="absolute inset-0 bg-black/10" />
+              
+              {/* Confetti container */}
+              <div className="absolute inset-0 overflow-hidden">
+                <Confetti 
+                  active={activeConfetti === index} 
+                  colors={prize.confettiColors}
+                  count={30}
+                />
+              </div>
+              
+              {/* Prize card content */}
+              <div className="relative p-6 flex flex-col items-center text-white h-full">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ 
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                    delay: 0.1 + index * 0.1
+                  }}
+                  className="text-5xl mb-4"
+                >
+                  {prize.emoji}
+                </motion.div>
+                
+                <h3 className="text-lg font-semibold mb-2">{prize.title}</h3>
+                
+                <div className="text-3xl font-bold mb-2">{prize.amount}</div>
+                
+                {prize.subtitle && (
+                  <div className="text-sm opacity-90">{prize.subtitle}</div>
+                )}
+                
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "40px" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+                  className="h-1 bg-white/50 mt-4 rounded-full"
+                />
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Additional info */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="mt-12 text-center max-w-2xl mx-auto"
+        >
+          <p className="text-black text-lg">
+            All prizes and certificates will be released within 10 days after the event. 
+            Prize pool and rewards are subject to sponsorship.
+          </p>
+          
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            className="inline-block mt-6 bg-black text-white px-6 py-3 rounded-full font-medium shadow-lg"
+          >
+            More details coming soon!
+          </motion.div>
+        </motion.div>
       </div>
-      <div className="w-full grid md:grid-cols-3 gap-8">
-        <motion.div
-          variants={prizeVariants}
-          className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 flex flex-col items-center text-center hover:scale-105 hover:shadow-2xl transition-transform duration-300"
-        >
-          <span className="block text-4xl font-bold text-[#ffb300] mb-2">
-            ₹1,20,000
-          </span>
-          <span className="block font-semibold">Winner</span>
-        </motion.div>
-        <motion.div
-          variants={prizeVariants}
-          className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 flex flex-col items-center text-center hover:scale-105 hover:shadow-2xl transition-transform duration-300"
-        >
-          <span className="block text-3xl font-bold text-[#ffb300] mb-2">
-            ₹75,000
-          </span>
-          <span className="block font-semibold">First Runner Up</span>
-        </motion.div>
-        <motion.div
-          variants={prizeVariants}
-          className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 flex flex-col items-center text-center hover:scale-105 hover:shadow-2xl transition-transform duration-300"
-        >
-          <span className="block text-3xl font-bold text-[#ffb300] mb-2">
-            ₹55,000
-          </span>
-          <span className="block font-semibold">Second Runner Up</span>
-        </motion.div>
-        <motion.div
-          variants={prizeVariants}
-          className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-xl border border-white/20 p-6 flex flex-col items-center text-center md:col-span-3 hover:scale-105 hover:shadow-2xl transition-transform duration-300"
-        >
-          <span className="block text-2xl font-bold text-[#ffb300] mb-2">
-            Track Winners (5)
-          </span>
-          <span className="block font-semibold">₹10,000 each (Total ₹50,000)</span>
-        </motion.div>
-      </div>
-      <motion.p
-        variants={prizeVariants}
-        className="mt-6 text-center text-gray-300"
-      >
-        All prizes and certificates will be released within 10 days after the
-        event. Prize pool and rewards are subject to sponsorship; more details
-        will be revealed soon.
-      </motion.p>
-      {/* Section Divider */}
-      <div className="w-32 h-1 bg-gradient-to-r from-[#ffb300] via-[#ff6e00] to-[#23235b] rounded-full mt-12 opacity-70" />
-    </motion.section>
+
+      {/* Add CSS for enhanced fading effects */}
+      <style jsx global>{`
+        .bg-radial-fade {
+          background: radial-gradient(
+            circle,
+            transparent 20%,
+            rgba(59, 179, 113, 0.4) 60%,
+            rgba(59, 179, 113, 0.9) 80%,
+            #3BB371 100%
+          );
+        }
+        
+        .bg-stronger-radial-fade {
+          background: radial-gradient(
+            circle,
+            transparent 0%,
+            rgba(59, 179, 113, 0.2) 40%,
+            rgba(59, 179, 113, 0.6) 60%,
+            rgba(59, 179, 113, 0.9) 80%,
+            #3BB371 100%
+          );
+        }
+        
+        .feathered-edge {
+          mask-image: radial-gradient(circle, black 40%, transparent 70%);
+          -webkit-mask-image: radial-gradient(circle, black 40%, transparent 70%);
+        }
+      `}</style>
+    </section>
   );
 };
 
