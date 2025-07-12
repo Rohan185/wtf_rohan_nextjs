@@ -87,7 +87,7 @@ const Hero = () => {
               className="flex flex-col sm:flex-row gap-4 mb-8"
             >
               <a
-                href="https://unstop.com/o/u6Pg2tA?lb=B5lCsBst"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-black text-white px-8 py-3 rounded-md font-bold text-lg shadow-md hover:bg-black/80 transition-colors duration-300 flex items-center"

@@ -105,7 +105,7 @@ const RegistrationCommunity = () => {
               
               <div className="space-y-6">
                 {[
-                  { step: 1, text: "Click \"Register\" on Unstop (individual)", emoji: "🚀", color: "from-blue-500/20 to-blue-600/10" },
+                  { step: 1, text: " \"Apply\" on Devfolio (individual)", emoji: "🚀", color: "from-blue-500/20 to-blue-600/10" },
                   { step: 2, text: "Create or join a team (max 4 members)", emoji: "👥", color: "from-green-500/20 to-green-600/10" },
                   { step: 3, text: "Join Discord link in confirmation email", emoji: "📧", color: "from-teal-500/20 to-teal-600/10" },
                   { step: 4, text: "Attend kickoff for briefs & APIs", emoji: "🎬", color: "from-purple-500/20 to-purple-600/10" },
@@ -145,7 +145,7 @@ const RegistrationCommunity = () => {
               <motion.a
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                href="https://unstop.com/o/u6Pg2tA?lb=B5lCsBst"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-black text-white px-8 py-3 rounded-md font-bold text-lg shadow-md hover:bg-black/80 transition-colors duration-300 flex items-center justify-center w-full md:w-auto relative overflow-hidden group"

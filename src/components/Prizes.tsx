@@ -75,21 +75,21 @@ const Prizes = () => {
     {
       amount: "₹1,20,000",
       title: "Winner",
-      emoji: "🏆",
+      iconSrc: "/trophy.svg",
       color: "from-purple-500 to-blue-500",
       confettiColors: ["#FFD700", "#9b5de5", "#f15bb5", "#fee440"]
     },
     {
       amount: "₹75,000",
       title: "First Runner Up",
-      emoji: "🥈",
+      iconSrc: "/medal-silver.svg",
       color: "from-blue-500 to-teal-500",
       confettiColors: ["#00f5d4", "#00bbf9", "#fee440", "#ffffff"]
     },
     {
       amount: "₹55,000",
       title: "Second Runner Up",
-      emoji: "🥉",
+      iconSrc: "/medal-bronze.svg",
       color: "from-teal-500 to-green-500",
       confettiColors: ["#fb5607", "#ffbe0b", "#3a86ff", "#8338ec"]
     },
@@ -97,7 +97,7 @@ const Prizes = () => {
       amount: "₹50,000",
       title: "Track Winners (5)",
       subtitle: "₹10,000 each",
-      emoji: "🚀",
+      iconSrc: "/rocket.svg",
       color: "from-green-500 to-yellow-500",
       confettiColors: ["#ff9e00", "#ff0054", "#390099", "#ffbd00"]
     }
@@ -267,9 +267,14 @@ const Prizes = () => {
                     damping: 20,
                     delay: 0.1 + index * 0.1
                   }}
-                  className="text-5xl mb-4"
+                  className="mb-4 w-16 h-16 flex items-center justify-center"
                 >
-                  {prize.emoji}
+                  <Image 
+                    src={prize.iconSrc} 
+                    alt={prize.title} 
+                    width={56} 
+                    height={56}
+                  />
                 </motion.div>
                 
                 <h3 className="text-lg font-semibold mb-2">{prize.title}</h3>
